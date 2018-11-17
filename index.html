@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8"/>
-   <script type="text/javascript" src="d3.js"></script>	  
+   <script type="text/javascript" src="d3.js"></script>
     <style>
     body {
 	  font: 12px sans-serif;
@@ -49,6 +49,8 @@
 
     </style>
 
+    <title>P4 by: Daisha Braxton</title>
+
    </head>
    <body>
    <div id="wrapper">
@@ -60,11 +62,11 @@
                 <strong>SATM Score:</strong> <span id="satm"></span><br/>
                 <strong>SATV Score:</strong> <span id="satv"></span><br/>
                 <strong>ACT Score:</strong> <span id="act"></span><br/>
-                <strong>GPA:</strong> <span id="gpa"></span><br/> 
+                <strong>GPA:</strong> <span id="gpa"></span><br/>
          </div>
    </div>
   <script>
-   
+
 	var width =500;
 	var height= 500;
 
@@ -79,31 +81,31 @@
 	    var satmExtent = d3.extent(csv, function(row) { return row.SATM; });
 	    var satvExtent = d3.extent(csv, function(row) { return row.SATV; });
 	    var actExtent = d3.extent(csv,  function(row) { return row.ACT;  });
-	    var gpaExtent = d3.extent(csv,  function(row) {return row.GPA;   });    
+	    var gpaExtent = d3.extent(csv,  function(row) {return row.GPA;   });
 
-	    
+
 	    var satExtents = {
 		"SATM": satmExtent,
 		"SATV": satvExtent
-	    }; 
-	   
+	    };
+
 
 	    var xScale = d3.scale.linear().domain(satmExtent).range([50, 470]);
 	    var yScale = d3.scale.linear().domain(satvExtent).range([470, 30]);
-	 
+
 	    var xScale2 = d3.scale.linear().domain(actExtent).range([50, 470]);
 	    var yScale2 = d3.scale.linear().domain(gpaExtent).range([470, 30]);
-	     
+
 	    var xAxis = d3.svg.axis().scale(xScale);
 	    var yAxis = d3.svg.axis().scale(yScale);
-	  
+
 	    var xAxis2 = d3.svg.axis().scale(xScale2);
 	    var yAxis2 = d3.svg.axis().scale(yScale2);
-	    
+
 	    yAxis.orient("left");
 	    yAxis2.orient("left");
 
-	 
+
 	    var chart1 = d3.select("#chart1")
 		                .append("svg:svg")
 		                .attr("width",width)
@@ -117,7 +119,7 @@
 
 
 		 /******************************************
-			
+
 			ADD BRUSHING CODE HERE
 
 
@@ -134,10 +136,10 @@
 		   .attr("cx", function(d) { return xScale(d.SATM); })
 		   .attr("cy", function(d) { return yScale(d.SATV); })
 		   .attr("r", 5)
-		   .on("click", function(d,i){ 
+		   .on("click", function(d,i){
 
            });
-	  
+
 
 
 	    var temp2= chart2.selectAll("circle")
@@ -149,11 +151,11 @@
 		   .attr("cx", function(d) { return xScale2(d.ACT); })
 		   .attr("cy", function(d) { return yScale2(d.GPA); })
 		   .attr("r", 5)
-		   .on("click", function(d,i){ 
+		   .on("click", function(d,i){
            });
-            
-    
-	    
+
+
+
 	    chart1 // or something else that selects the SVG element in your visualizations
 			.append("g") // create a group node
 			.attr("transform", "translate(0,"+ (width -30)+ ")")
@@ -199,11 +201,10 @@
 			.attr("dy", ".71em")
 			.style("text-anchor", "end")
 			.text("GPA");
-	   
+
      });
 
 
   </script>
   </body>
 </html>
-

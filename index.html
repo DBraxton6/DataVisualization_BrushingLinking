@@ -47,6 +47,10 @@
 		shape-rendering: crispEdges;
 	}
 
+  .circle.brushed {
+      fill: pink;
+  }
+
     </style>
 
     <title>P4 by: Daisha Braxton</title>
@@ -120,11 +124,59 @@
 
 		 /******************************************
 
-			ADD BRUSHING CODE HERE
+			ADD BRUSHING CODE HERE*/
+      var brush = d3.svg.brush()
+          .extent([[0, 0],[width, height]]);
+
+      brushX = d3.scale.linear().range([0, width]),
+      brushY = d3.scale.linear().range([0, height]);
+      brush.x(brushX).y(brushY);
+
+      chart1.append("g")
+          .attr("class", "brush")
+          .call(brush);
+
+      // chart2.append("g")
+      //     .attr("class", "brush")
+      //     .call(brush);
+
+      brush
+          .on("brushstart", brushstart)   // when mousedown&dragging starts
+          .on("brush", brushing)          // when dragging
+          .on("brushend", brushend);
+
+      function brushstart() {
+              //
+      }
+
+      function brushing() {
+              // simultaneous update during brushing
+          var e = brush.extent();         // coordinates of brushed area:
+                                              // top-left x: e[0][0] y: e[0][1]
+                                              // bottom-right x: e[1][0] y: e[1][1]
+
+              // change the class of node to brushed if the node is inside the brushed extent
+          chart1.selectAll('circle').classed("brushed", function(d) {
+                  return e[0][0] <= brushX.invert(d.x) && brushX.invert(d.x) <= e[1][0] &&
+                      e[0][1] <= brushY.invert(d.y) && brushY.invert(d.y) <= e[1][1];
+          });
+
+              // extract the indexes of brushed elements
+          brushed_idx = chart1.selectAll("circle.brushed").data();
+
+              // link to second svg- highlight nodes (that are brushed in svg1) in svg2
+          chart2.selectAll("circle").classed("brushed", function(d) {
+                  return brushed_idx.includes(d.index);
+          });
+        }
+
+        function brushend() {
+              // update after brusing is finished
+        }
 
 
 
-		 ******************************************/
+     /******************************************/
 
 
 	     var temp1= chart1.selectAll("circle")

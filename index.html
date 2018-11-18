@@ -47,10 +47,6 @@
 		shape-rendering: crispEdges;
 	}
 
-  .circle.brushed {
-      fill: pink;
-  }
-
     </style>
 
     <title>P4 by: Daisha Braxton</title>
@@ -126,53 +122,85 @@
 
 			ADD BRUSHING CODE HERE*/
       var brush = d3.svg.brush()
-          .extent([[0, 0],[width, height]]);
+      				.extent([[0, 0], [width, height]]);
 
       brushX = d3.scale.linear().range([0, width]),
-      brushY = d3.scale.linear().range([0, height]);
-      brush.x(brushX).y(brushY);
+  		brushY = d3.scale.linear().range([0, height]);
+  		brush.x(brushX).y(brushY);
 
       chart1.append("g")
-          .attr("class", "brush")
-          .call(brush);
+      .attr("class", "brush")
+      .call(brush);
 
-      // chart2.append("g")
-      //     .attr("class", "brush")
-      //     .call(brush);
+			brush
+				.on("brushstart", brushstart)
+				.on("brush", brushing)
+				.on("brushend", brushend)
 
-      brush
-          .on("brushstart", brushstart)   // when mousedown&dragging starts
-          .on("brush", brushing)          // when dragging
-          .on("brushend", brushend);
+			var brush2 = d3.svg.brush()
+				.extent([[0, 0], [width, height]]);
 
-      function brushstart() {
-              //
-      }
+			brushX2 = d3.scale.linear().range([0, width]),
+			brushY2 = d3.scale.linear().range([0, height]);
+			brush2.x(brushX2).y(brushY2);
 
-      function brushing() {
-              // simultaneous update during brushing
-          var e = brush.extent();         // coordinates of brushed area:
-                                              // top-left x: e[0][0] y: e[0][1]
-                                              // bottom-right x: e[1][0] y: e[1][1]
+			chart2.append("g")
+				.attr("class", "brush")
+				.call(brush2);
 
-              // change the class of node to brushed if the node is inside the brushed extent
-          chart1.selectAll('circle').classed("brushed", function(d) {
-                  return e[0][0] <= brushX.invert(d.x) && brushX.invert(d.x) <= e[1][0] &&
-                      e[0][1] <= brushY.invert(d.y) && brushY.invert(d.y) <= e[1][1];
-          });
+			brush2
+				.on("brushstart", brushstart2)
+				.on("brush", brushing2)
+				.on("brushend", brushend2);
 
-              // extract the indexes of brushed elements
-          brushed_idx = chart1.selectAll("circle.brushed").data();
+			function brushstart() {
+				//chart2.call(brush2.clear());  <<<< CLEAR1
+			}
 
-              // link to second svg- highlight nodes (that are brushed in svg1) in svg2
-          chart2.selectAll("circle").classed("brushed", function(d) {
-                  return brushed_idx.includes(d.index);
-          });
-        }
+			function brushing() {
+				var e = brush.extent();
 
-        function brushend() {
-              // update after brusing is finished
-        }
+				chart1.selectAll('circle').classed("selected", function (d) {
+					return e[0][0] <= brushX.invert(xScale(d.SATM)) && brushX.invert(xScale(d.SATM)) <= e[1][0] &&
+						e[0][1] <= brushY.invert(yScale(d.SATV)) && brushY.invert(yScale(d.SATV)) <= e[1][1];
+				});
+
+				brushed_idx = chart1.selectAll("circle.selected").data()
+				// link to second svg- highlight nodes (that are brushed in svg1) in svg2
+				chart2.selectAll("circle").classed("selected2", function (d) {
+					return brushed_idx.includes(d);
+				});
+			}
+
+			function brushend() {
+				//
+			}
+
+
+			function brushstart2() {
+				//chart1.call(brush.clear()); <<<<< CLEAR2
+			}
+
+			function brushing2() {
+				var f = brush2.extent();
+
+
+
+				chart2.selectAll('circle').classed("selected2", function (d) {
+					return f[0][0] <= brushX2.invert(xScale2(d.ACT)) && brushX2.invert(xScale2(d.ACT)) <= f[1][0] &&
+						f[0][1] <= brushY2.invert(yScale2(d.GPA)) && brushY2.invert(yScale2(d.GPA)) <= f[1][1];
+				});
+
+				brushed_idx2 = chart2.selectAll("circle.selected2").data()
+				// link to second svg- highlight nodes (that are brushed in svg1) in svg2
+				chart1.selectAll("circle").classed("selected", function (d) {
+					return brushed_idx2.includes(d);
+				});
+			}
+
+			function brushend2() {
+				//
+			}
 
 
 
